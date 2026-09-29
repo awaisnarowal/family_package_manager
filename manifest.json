@@ -1,6 +1,6 @@
 {
   "name": "Madina Mobile Center Narowal",
-  "short_name": "Madina Mobile",
+  "short_name": "Family Package Managere",
   "description": "Family Package Manager for Madina Mobile Center Narowal",
   "start_url": "./index.html",
   "display": "standalone",
