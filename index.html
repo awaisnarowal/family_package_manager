@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Package Manager - Madina Mobile Center Narowal</title>
+
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered!', reg))
+                    .catch(err => console.error('Service Worker Error:', err));
+            });
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-input: rgba(15, 23, 42, 0.6);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --accent-glow: rgba(37, 99, 235, 0.35);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.25);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-win: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(37, 99, 235, 0.1);
+            --status-green: #10b981;
+            --status-orange: #f59e0b;
+            --status-red: #ef4444;
+            --status-darkred: #991b1b;
+            --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a 60%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: var(--shadow-win);
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            font-size: 0.88rem;
+            color: #60a5fa;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-win);
+        }
+
+        .stat-info span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 4px;
+            color: #ffffff;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.85;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 980px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-win);
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: #38bdf8;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.92rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--border-hover);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .child-number-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .child-number-row input {
+            flex: 1;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+
+        .customer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .customer-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .customer-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-win);
+        }
+
+        .card-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .cust-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .badge-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tag-network {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .tag-package {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .status-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-red {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-expired {
+            background: rgba(153, 27, 27, 0.25);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            margin: 10px 0 14px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease, background-color 0.5s ease;
+        }
+
+        .number-box {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .number-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .number-val {
+            font-family: monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .child-section {
+            margin-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 8px;
+        }
+
+        .child-title {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-notes {
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 8px;
+            border-radius: var(--radius-sm);
+            margin-top: 8px;
+            border-left: 2px solid #38bdf8;
+            word-break: break-word;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .card-actions .btn {
+            flex: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: #1e293b;
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: #38bdf8;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        footer strong {
+            color: #38bdf8;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>📱 Family Package Manager</h1>
+                <p>Madina Mobile Center Narowal</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="openPackageModal()">⚙ Package Settings</button>
+                <button class="btn btn-secondary" onclick="exportData()">⬇ Export Backup</button>
+                <button class="btn btn-secondary" onclick="triggerImport()">⬆ Import Backup</button>
+                <input type="file" id="importFileInput" style="display: none;" accept=".json" onchange="importData(event)">
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Customers</span>
+                    <h3 id="statTotalCustomers">0</h3>
+                </div>
+                <div class="stat-icon">👥</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Main Numbers</span>
+                    <h3 id="statMainNumbers">0</h3>
+                </div>
+                <div class="stat-icon">📞</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Child Numbers</span>
+                    <h3 id="statChildNumbers">0</h3>
+                </div>
+                <div class="stat-icon">👨‍👩‍👧</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Active / Expired</span>
+                    <h3 id="statActiveExpired">0 / 0</h3>
+                </div>
+                <div class="stat-icon">📊</div>
+            </div>
+        </section>
+
+        <div class="main-layout">
+            
+            <!-- Customer Entry Form -->
+            <div class="card-panel">
+                <div class="panel-title" id="formPanelTitle">
+                    ➕ Add New Customer
+                </div>
+                <form id="customerForm" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="editCustomerId" value="">
+
+                    <div class="form-group">
+                        <label for="custName">Customer Name *</label>
+                        <input type="text" id="custName" class="form-control" placeholder="e.g. Ali Ahmed" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="custNetwork">Network *</label>
+                            <select id="custNetwork" class="form-control" required>
+                                <option value="Jazz">Jazz</option>
+                                <option value="Zong">Zong</option>
+                                <option value="Telenor">Telenor</option>
+                                <option value="Ufone">Ufone</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="custPackage">Package *</label>
+                            <select id="custPackage" class="form-control" required>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custMainNumber">Main Number * (11 digits, starts with 03)</label>
+                        <input type="tel" id="custMainNumber" class="form-control" placeholder="03001234567" maxlength="11" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custExpiry">Expiry Date *</label>
+                        <input type="date" id="custExpiry" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>👨‍👩‍👧 Child Numbers</label>
+                        <div id="childNumbersContainer"></div>
+                        <button type="button" class="btn btn-secondary btn-sm btn-full" style="margin-top: 4px;" onclick="addChildInput()">
+                            + Add Child
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custNotes">Notes (Optional)</label>
+                        <textarea id="custNotes" class="form-control" rows="2" placeholder="Special requirements, discounts, etc."></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                        <button type="submit" class="btn btn-primary btn-full" id="saveBtn">
+                            💾 Save Customer
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;" onclick="resetCustomerForm()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Customer Search & Grid Panel -->
+            <div>
+                <div class="search-filter-bar">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" class="form-control" placeholder="🔎 Search Name, Numbers, Network, Notes..." oninput="renderCustomers()">
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="tab-btn active" onclick="setFilter('ALL', this)">All</button>
+                        <button class="tab-btn" onclick="setFilter('ACTIVE', this)">Active</button>
+                        <button class="tab-btn" onclick="setFilter('EXPIRING', this)">Expiring Soon</button>
+                        <button class="tab-btn" onclick="setFilter('EXPIRED', this)">Expired</button>
+                    </div>
+                </div>
+
+                <div id="customerGrid" class="customer-grid">
+                    <!-- Cards rendered dynamically -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Package Settings Modal -->
+    <div class="modal-overlay" id="packageModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>⚙ Package Settings</h3>
+                <button class="close-modal" onclick="closePackageModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Add New Package Name</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="newPackageInput" class="form-control" placeholder="e.g. MY7, Custom 10">
+                    <button class="btn btn-primary" onclick="addNewPackage()">Add</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px;">
+                <label style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Existing Packages</label>
+                <div id="packagesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Renewal Date Picker Modal -->
+    <div class="modal-overlay" id="renewModal">
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>🔄 Renew Package Expiry</h3>
+                <button class="close-modal" onclick="closeRenewModal()">&times;</button>
+            </div>
+            <input type="hidden" id="renewCustomerId">
+            <div class="form-group">
+                <label for="renewDateInput">Select New Expiry Date</label>
+                <input type="date" id="renewDateInput" class="form-control" required>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button class="btn btn-primary btn-full" onclick="confirmRenewal()">Confirm Renewal</button>
+                <button class="btn btn-secondary" onclick="closeRenewModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <strong>Madina Mobile Center Narowal</strong> &bull; Family Packages & Mobile Services
+    </footer>
+
+    <script>
+        const STORAGE_KEY_CUSTOMERS = "madina_family_package_customers";
+        const STORAGE_KEY_PACKAGES = "madina_family_package_names";
+
+        let customers = [];
+        let packages = [];
+        let currentFilter = "ALL";
+
+        // Initialization
+        window.addEventListener("DOMContentLoaded", () => {
+            loadPackages();
+            loadCustomers();
+            renderPackageOptions();
+            renderCustomers();
+            updateStatistics();
+        });
+
+        function loadPackages() {
+            const stored = localStorage.getItem(STORAGE_KEY_PACKAGES);
+            if (stored) {
+                try {
+                    packages = JSON.parse(stored);
+                } catch (e) {
+                    packages = ["MY5", "MY3"];
+                }
+            } else {
+                packages = ["MY5", "MY3"];
+                savePackages();
+            }
+        }
+
+        function savePackages() {
+            localStorage.setItem(STORAGE_KEY_PACKAGES, JSON.stringify(packages));
+        }
+
+        function loadCustomers() {
+            const stored = localStorage.getItem(STORAGE_KEY_CUSTOMERS);
+            if (stored) {
+                try {
+                    customers = JSON.parse(stored);
+                } catch (e) {
+                    customers = [];
+                }
+            } else {
+                customers = [];
+            }
+        }
+
+        function saveCustomers() {
+            localStorage.setItem(STORAGE_KEY_CUSTOMERS, JSON.stringify(customers));
+            renderCustomers();
+            updateStatistics();
+        }
+
+        function validateNumber(num) {
+            const regex = /^03\d{9}$/;
+            return regex.test(num);
+        }
+
+        function renderPackageOptions() {
+            const select = document.getElementById("custPackage");
+            select.innerHTML = "";
+            packages.forEach(pkg => {
+                const opt = document.createElement("option");
+                opt.value = pkg;
+                opt.textContent = pkg;
+                select.appendChild(opt);
+            });
+        }
+
+        function addChildInput(val = "") {
+            const container = document.getElementById("childNumbersContainer");
+            const div = document.createElement("div");
+            div.className = "child-number-row";
+            div.innerHTML = `
+                <input type="tel" class="form-control child-num-input" placeholder="03111234567" maxlength="11" value="${val}">
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById("editCustomerId").value || Date.now().toString();
+            const name = document.getElementById("custName").value.trim();
+            const network = document.getElementById("custNetwork").value;
+            const pkg = document.getElementById("custPackage").value;
+            const mainNum = document.getElementById("custMainNumber").value.trim();
+            const expiry = document.getElementById("custExpiry").value;
+            const notes = document.getElementById("custNotes").value.trim();
+
+            // Validate main number
+            if (!validateNumber(mainNum)) {
+                alert("Main Number must be exactly 11 digits and start with 03 (e.g. 03001234567)");
+                return;
+            }
+
+            // Validate child numbers
+            const childInputs = document.querySelectorAll(".child-num-input");
+            const childNumbers = [];
+            for (let input of childInputs) {
+                const val = input.value.trim();
+                if (val) {
+                    if (!validateNumber(val)) {
+                        alert(`Child Number "${val}" is invalid. Must be 11 digits starting with 03.`);
+                        return;
+                    }
+                    childNumbers.push(val);
+                }
+            }
+
+            const customerData = {
+                id,
+                name,
+                network,
+                package: pkg,
+                mainNumber: mainNum,
+                childNumbers,
+                expiry,
+                notes,
+                updatedAt: new Date().toISOString()
+            };
+
+            const existingIndex = customers.findIndex(c => c.id === id);
+            if (existingIndex > -1) {
+                customers[existingIndex] = customerData;
+            } else {
+                customers.push(customerData);
+            }
+
+            saveCustomers();
+            resetCustomerForm();
+        }
+
+        function resetCustomerForm() {
+            document.getElementById("customerForm").reset();
+            document.getElementById("editCustomerId").value = "";
+            document.getElementById("childNumbersContainer").innerHTML = "";
+            document.getElementById("formPanelTitle").innerHTML = "➕ Add New Customer";
+            document.getElementById("saveBtn").innerHTML = "💾 Save Customer";
+            document.getElementById("cancelEditBtn").style.display = "none";
+        }
+
+        function editCustomer(id) {
+            const cust = customers.find(c => c.id === id);
+            if (!cust) return;
+
+            document.getElementById("editCustomerId").value = cust.id;
+            document.getElementById("custName").value = cust.name;
+            document.getElementById("custNetwork").value = cust.network;
+            document.getElementById("custPackage").value = cust.package;
+            document.getElementById("custMainNumber").value = cust.mainNumber;
+            document.getElementById("custExpiry").value = cust.expiry;
+            document.getElementById("custNotes").value = cust.notes || "";
+
+            const container = document.getElementById("childNumbersContainer");
+            container.innerHTML = "";
+            if (cust.childNumbers && cust.childNumbers.length) {
+                cust.childNumbers.forEach(cn => addChildInput(cn));
+            }
+
+            document.getElementById("formPanelTitle").innerHTML = "✏️ Edit Customer";
+            document.getElementById("saveBtn").innerHTML = "💾 Update Customer";
+            document.getElementById("cancelEditBtn").style.display = "inline-flex";
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteCustomer(id) {
+            if (confirm("Delete this customer permanently?")) {
+                customers = customers.filter(c => c.id !== id);
+                saveCustomers();
+            }
+        }
+
+        function calculateRemainingDays(expiryDateStr) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const expiry = new Date(expiryDateStr);
+            expiry.setHours(0,0,0,0);
+
+            const diffTime = expiry - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function formatDateReadable(dateStr) {
+            if (!dateStr) return "";
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function getStatusInfo(remainingDays) {
+            if (remainingDays < 0) {
+                return {
+                    label: "🔴 Expired",
+                    class: "status-expired",
+                    color: "var(--status-darkred)",
+                    percent: 0,
+                    category: "EXPIRED"
+                };
+            } else if (remainingDays <= 3) {
+                return {
+                    label: `🔴 ${remainingDays} Day${remainingDays === 1 ? '' : 's'} Left`,
+                    class: "status-red",
+                    color: "var(--status-red)",
+                    percent: Math.min(100, (remainingDays / 30) * 100),
+                    category: "EXPIRING"
+                };
+            } else if (remainingDays <= 7) {
+                return {
+                    label: `🟠 ${remainingDays} Days Left`,
+                    class: "status-orange",
+                    color: "var(--status-orange)",
+                    percent: Math.min(100, (remainingDays / 30) * 100),
+                    category: "EXPIRING"
+                };
+            } else {
+                return {
+                    label: `🟢 ${remainingDays} Days Left`,
+                    class: "status-green",
+                    color: "var(--status-green)",
+                    percent: Math.min(100, (remainingDays / 30) * 100),
+                    category: "ACTIVE"
+                };
+            }
+        }
+
+        function sendReminder(number, packageName, expiryDate) {
+            const formattedDate = formatDateReadable(expiryDate);
+            const message = `Package Reminder\n\nYour ${packageName} package on ${number} will expire on ${formattedDate}.\n\nPlease renew your package on time.\n\nMadina Mobile Center Narowal`;
+
+            const smsUrl = "sms:" + number + "?body=" + encodeURIComponent(message);
+            window.location.href = smsUrl;
+        }
+
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            if (btn) btn.classList.add("active");
+            renderCustomers();
+        }
+
+        function renderCustomers() {
+            const grid = document.getElementById("customerGrid");
+            const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+
+            let filtered = customers.filter(cust => {
+                const days = calculateRemainingDays(cust.expiry);
+                const statusInfo = getStatusInfo(days);
+
+                // Tab Filter
+                if (currentFilter === "ACTIVE" && statusInfo.category !== "ACTIVE") return false;
+                if (currentFilter === "EXPIRING" && statusInfo.category !== "EXPIRING") return false;
+                if (currentFilter === "EXPIRED" && statusInfo.category !== "EXPIRED") return false;
+
+                // Search Query Filter
+                if (searchQuery) {
+                    const matchName = cust.name.toLowerCase().includes(searchQuery);
+                    const matchMain = cust.mainNumber.includes(searchQuery);
+                    const matchChild = cust.childNumbers && cust.childNumbers.some(cn => cn.includes(searchQuery));
+                    const matchNet = cust.network.toLowerCase().includes(searchQuery);
+                    const matchPkg = cust.package.toLowerCase().includes(searchQuery);
+                    const matchNotes = cust.notes && cust.notes.toLowerCase().includes(searchQuery);
+                    const matchDate = formatDateReadable(cust.expiry).toLowerCase().includes(searchQuery);
+
+                    return matchName || matchMain || matchChild || matchNet || matchPkg || matchNotes || matchDate;
+                }
+
+                return true;
+            });
+
+            // Sort by remaining days ascending
+            filtered.sort((a, b) => calculateRemainingDays(a.expiry) - calculateRemainingDays(b.expiry));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span style="font-size:2.5rem;">📱</span>
+                        <p style="margin-top:8px;">No customers found matching criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(cust => {
+                const days = calculateRemainingDays(cust.expiry);
+                const status = getStatusInfo(days);
+                const readableExpiry = formatDateReadable(cust.expiry);
+
+                const childRowsHtml = (cust.childNumbers || []).map(cn => `
+                    <div class="number-box">
+                        <div>
+                            <span class="number-label">Child</span><br>
+                            <span class="number-val">${cn}</span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cn}', '${cust.package}', '${cust.expiry}')">
+                            🔔 Reminder
+                        </button>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="customer-card">
+                        <div>
+                            <div class="card-header-info">
+                                <div>
+                                    <div class="cust-name">${escapeHtml(cust.name)}</div>
+                                    <div class="badge-tags">
+                                        <span class="tag tag-network">${escapeHtml(cust.network)}</span>
+                                        <span class="tag tag-package">${escapeHtml(cust.package)}</span>
+                                    </div>
+                                </div>
+                                <span class="status-badge ${status.class}">${status.label}</span>
+                            </div>
+
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: ${Math.max(5, status.percent)}%; background-color: ${status.color};"></div>
+                            </div>
+
+                            <div class="number-box">
+                                <div>
+                                    <span class="number-label">Main Number</span><br>
+                                    <span class="number-val">${cust.mainNumber}</span>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cust.mainNumber}', '${cust.package}', '${cust.expiry}')">
+                                    🔔 Reminder
+                                </button>
+                            </div>
+
+                            ${cust.childNumbers && cust.childNumbers.length > 0 ? `
+                                <div class="child-section">
+                                    <div class="child-title">👨‍👩‍👧 Child Numbers (${cust.childNumbers.length})</div>${childRowsHtml}
+                                </div>
+                            ` : ''}
+
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">
+                                Expiry Date: <strong style="color: #f1f5f9;">${readableExpiry}</strong>
+                            </div>
+
+                            ${cust.notes ? `<div class="card-notes">📝 ${escapeHtml(cust.notes)}</div>` : ''}
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openRenewModal('${cust.id}')">🔄 Renew</button>
+                            <button class="btn btn-secondary btn-sm" onclick="editCustomer('${cust.id}')">✏️ Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${cust.id}')">🗑 Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openPackageModal() {
+            renderPackagesList();
+            document.getElementById("packageModal").classList.add("active");
+        }
+
+        function closePackageModal() {
+            document.getElementById("packageModal").classList.remove("active");
+        }
+
+        function renderPackagesList() {
+            const list = document.getElementById("packagesList");
+            list.innerHTML = packages.map((pkg, idx) => `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15,23,42,0.5); padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 6px;">
+                    <span style="font-weight: 600;">${escapeHtml(pkg)}</span>
+                    <button class="btn btn-danger btn-sm" onclick="deletePackage(${idx})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function addNewPackage() {
+            const input = document.getElementById("newPackageInput");
+            const val = input.value.trim();
+            if (val && !packages.includes(val)) {
+                packages.push(val);
+                savePackages();
+                renderPackageOptions();
+                renderPackagesList();
+                input.value = "";
+            }
+        }
+
+        function deletePackage(index) {
+            if (packages.length <= 1) {
+                alert("At least one package name must remain.");
+                return;
+            }
+            packages.splice(index, 1);
+            savePackages();
+            renderPackageOptions();
+            renderPackagesList();
+        }
+
+        function openRenewModal(id) {
+            const cust = customers.find(c => c.id === id);
+            if (!cust) return;
+
+            document.getElementById("renewCustomerId").value = id;
+            document.getElementById("renewDateInput").value = cust.expiry;
+            document.getElementById("renewModal").classList.add("active");
+        }
+
+        function closeRenewModal() {
+            document.getElementById("renewModal").classList.remove("active");
+        }
+
+        function confirmRenewal() {
+            const id = document.getElementById("renewCustomerId").value;
+            const newDate = document.getElementById("renewDateInput").value;
+
+            if (!newDate) {
+                alert("Please select a valid expiry date.");
+                return;
+            }
+
+            const cust = customers.find(c => c.id === id);
+            if (cust) {
+                cust.expiry = newDate;
+                cust.updatedAt = new Date().toISOString();
+                saveCustomers();
+                closeRenewModal();
+            }
+        }
+
+        function updateStatistics() {
+            const totalCust = customers.length;
+            let totalMain = customers.length;
+            let totalChild = 0;
+            let activeCount = 0;
+            let expiredCount = 0;
+
+            customers.forEach(c => {
+                if (c.childNumbers) {
+                    totalChild += c.childNumbers.length;
+                }
+                const days = calculateRemainingDays(c.expiry);
+                if (days < 0) {
+                    expiredCount++;
+                } else {
+                    activeCount++;
+                }
+            });
+
+            document.getElementById("statTotalCustomers").textContent = totalCust;
+            document.getElementById("statMainNumbers").textContent = totalMain;
+            document.getElementById("statChildNumbers").textContent = totalChild;
+            document.getElementById("statActiveExpired").textContent = `${activeCount} / ${expiredCount}`;
+        }
+
+        function exportData() {
+            const dataPayload = {
+                customers: customers,
+                packages: packages,
+                exportDate: new Date().toISOString(),
+                shop: "Madina Mobile Center Narowal"
+            };
+
+            const jsonStr = JSON.stringify(dataPayload, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.callwindow.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Madina_Mobile_Backup_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerImport() {
+            document.getElementById("importFileInput").click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed && Array.isArray(parsed.customers) && Array.isArray(parsed.packages)) {
+                        if (confirm("Importing this backup will replace current records. Continue?")) {
+                            customers = parsed.customers;
+                            packages = parsed.packages;
+                            saveCustomers();
+                            savePackages();
+                            renderPackageOptions();
+                            alert("Backup restored successfully!");
+                        }
+                    } else {
+                        alert("Invalid backup file structure.");
+                    }
+                } catch (err) {
+                    alert("Error reading JSON file.");
+                }
+                event.target.value = "";
+            };
+            reader.readAsText(file);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>
