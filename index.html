@@ -252,10 +252,6 @@
             transform: translateY(-1px);
         }
 
-        .btn-primary:active {
-            transform: translateY(1px);
-        }
-
         .btn-secondary {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
@@ -277,16 +273,6 @@
             background: rgba(239, 68, 68, 0.3);
         }
 
-        .btn-warning {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fcd34d;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-
-        .btn-warning:hover {
-            background: rgba(245, 158, 11, 0.3);
-        }
-
         .btn-sm {
             padding: 6px 10px;
             font-size: 0.8rem;
@@ -296,15 +282,16 @@
             width: 100%;
         }
 
-        .child-number-row {
-            display: flex;
-            gap: 8px;
+        .child-input-group {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: var(--radius-sm);
             margin-bottom: 8px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .child-number-row input {
-            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 6px;
+            align-items: center;
         }
 
         .search-filter-bar {
@@ -475,9 +462,23 @@
             padding: 8px 10px;
             margin-bottom: 8px;
             display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .number-box-top {
+            display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
+        }
+
+        .number-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            border-top: 1px dashed rgba(255,255,255,0.08);
+            padding-top: 4px;
         }
 
         .number-label {
@@ -490,6 +491,27 @@
             font-size: 0.95rem;
             font-weight: 600;
             color: #f1f5f9;
+        }
+
+        .payment-status-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .pay-paid {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .pay-pending {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
         }
 
         .child-section {
@@ -610,7 +632,6 @@
             color: #38bdf8;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
@@ -626,12 +647,6 @@
             padding: 40px 20px;
             color: var(--text-secondary);
             grid-column: 1 / -1;
-        }
-
-        .empty-state icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -721,15 +736,23 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="mainPaymentStatus">Main Number Payment Status</label>
+                        <select id="mainPaymentStatus" class="form-control">
+                            <option value="Paid">Paid (Adaigi Ho Chuki)</option>
+                            <option value="Pending">Pending (Adaigi Baqi Hai)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="custExpiry">Expiry Date *</label>
                         <input type="date" id="custExpiry" class="form-control" required>
                     </div>
 
                     <div class="form-group">
-                        <label>👨‍👩‍👧 Child Numbers</label>
+                        <label>👨‍👩‍👧 Child Numbers & Names</label>
                         <div id="childNumbersContainer"></div>
                         <button type="button" class="btn btn-secondary btn-sm btn-full" style="margin-top: 4px;" onclick="addChildInput()">
-                            + Add Child
+                            + Add Child Number
                         </button>
                     </div>
 
@@ -760,6 +783,7 @@
                         <button class="tab-btn" onclick="setFilter('ACTIVE', this)">Active</button>
                         <button class="tab-btn" onclick="setFilter('EXPIRING', this)">Expiring Soon</button>
                         <button class="tab-btn" onclick="setFilter('EXPIRED', this)">Expired</button>
+                        <button class="tab-btn" onclick="setFilter('PENDING', this)">Pending Pay</button>
                     </div>
                 </div>
 
@@ -823,7 +847,6 @@
         let packages = [];
         let currentFilter = "ALL";
 
-        // Initialization
         window.addEventListener("DOMContentLoaded", () => {
             loadPackages();
             loadCustomers();
@@ -835,11 +858,7 @@
         function loadPackages() {
             const stored = localStorage.getItem(STORAGE_KEY_PACKAGES);
             if (stored) {
-                try {
-                    packages = JSON.parse(stored);
-                } catch (e) {
-                    packages = ["MY5", "MY3"];
-                }
+                try { packages = JSON.parse(stored); } catch (e) { packages = ["MY5", "MY3"]; }
             } else {
                 packages = ["MY5", "MY3"];
                 savePackages();
@@ -853,11 +872,7 @@
         function loadCustomers() {
             const stored = localStorage.getItem(STORAGE_KEY_CUSTOMERS);
             if (stored) {
-                try {
-                    customers = JSON.parse(stored);
-                } catch (e) {
-                    customers = [];
-                }
+                try { customers = JSON.parse(stored); } catch (e) { customers = []; }
             } else {
                 customers = [];
             }
@@ -885,13 +900,18 @@
             });
         }
 
-        function addChildInput(val = "") {
+        function addChildInput(nameVal = "", numVal = "", payVal = "Paid") {
             const container = document.getElementById("childNumbersContainer");
             const div = document.createElement("div");
-            div.className = "child-number-row";
+            div.className = "child-input-group";
             div.innerHTML = `
-                <input type="tel" class="form-control child-num-input" placeholder="03111234567" maxlength="11" value="${val}">
-                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+                <input type="text" class="form-control child-name-input" placeholder="Name (e.g. Ali)" value="${nameVal}">
+                <input type="tel" class="form-control child-num-input" placeholder="03111234567" maxlength="11" value="${numVal}">
+                <select class="form-control child-pay-input" style="padding: 6px; font-size: 0.8rem;">
+                    <option value="Paid" ${payVal === 'Paid' ? 'selected' : ''}>Paid</option>
+                    <option value="Pending" ${payVal === 'Pending' ? 'selected' : ''}>Pending</option>
+                </select>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()" style="grid-column: span 3;">✕ Remove</button>
             `;
             container.appendChild(div);
         }
@@ -904,26 +924,28 @@
             const network = document.getElementById("custNetwork").value;
             const pkg = document.getElementById("custPackage").value;
             const mainNum = document.getElementById("custMainNumber").value.trim();
+            const mainPay = document.getElementById("mainPaymentStatus").value;
             const expiry = document.getElementById("custExpiry").value;
             const notes = document.getElementById("custNotes").value.trim();
 
-            // Validate main number
             if (!validateNumber(mainNum)) {
                 alert("Main Number must be exactly 11 digits and start with 03 (e.g. 03001234567)");
                 return;
             }
 
-            // Validate child numbers
-            const childInputs = document.querySelectorAll(".child-num-input");
+            const childRows = document.querySelectorAll(".child-input-group");
             const childNumbers = [];
-            for (let input of childInputs) {
-                const val = input.value.trim();
-                if (val) {
-                    if (!validateNumber(val)) {
-                        alert(`Child Number "${val}" is invalid. Must be 11 digits starting with 03.`);
+            for (let row of childRows) {
+                const cName = row.querySelector(".child-name-input").value.trim() || "Family Member";
+                const cNum = row.querySelector(".child-num-input").value.trim();
+                const cPay = row.querySelector(".child-pay-input").value;
+
+                if (cNum) {
+                    if (!validateNumber(cNum)) {
+                        alert(`Child Number "${cNum}" is invalid. Must be 11 digits starting with 03.`);
                         return;
                     }
-                    childNumbers.push(val);
+                    childNumbers.push({ name: cName, number: cNum, payment: cPay });
                 }
             }
 
@@ -933,6 +955,7 @@
                 network,
                 package: pkg,
                 mainNumber: mainNum,
+                mainPayment: mainPay,
                 childNumbers,
                 expiry,
                 notes,
@@ -968,13 +991,16 @@
             document.getElementById("custNetwork").value = cust.network;
             document.getElementById("custPackage").value = cust.package;
             document.getElementById("custMainNumber").value = cust.mainNumber;
+            document.getElementById("mainPaymentStatus").value = cust.mainPayment || "Paid";
             document.getElementById("custExpiry").value = cust.expiry;
             document.getElementById("custNotes").value = cust.notes || "";
 
             const container = document.getElementById("childNumbersContainer");
             container.innerHTML = "";
             if (cust.childNumbers && cust.childNumbers.length) {
-                cust.childNumbers.forEach(cn => addChildInput(cn));
+                cust.childNumbers.forEach(cn => {
+                    addChildInput(cn.name || '', cn.number || cn, cn.payment || 'Paid');
+                });
             }
 
             document.getElementById("formPanelTitle").innerHTML = "✏️ Edit Customer";
@@ -991,6 +1017,18 @@
             }
         }
 
+        function togglePaymentStatus(id, type, index = null) {
+            const cust = customers.find(c => c.id === id);
+            if (!cust) return;
+
+            if (type === 'main') {
+                cust.mainPayment = cust.mainPayment === 'Pending' ? 'Paid' : 'Pending';
+            } else if (type === 'child' && index !== null) {
+                cust.childNumbers[index].payment = cust.childNumbers[index].payment === 'Pending' ? 'Paid' : 'Pending';
+            }
+            saveCustomers();
+        }
+
         function calculateRemainingDays(expiryDateStr) {
             const today = new Date();
             today.setHours(0,0,0,0);
@@ -1004,49 +1042,36 @@
         function formatDateReadable(dateStr) {
             if (!dateStr) return "";
             const d = new Date(dateStr);
-            if (isNaN(d.getTime())) return dateStr;
+            if (isNaN(d.getTime()))return dateStr;
             return d.toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
         function getStatusInfo(remainingDays) {
             if (remainingDays < 0) {
-                return {
-                    label: "🔴 Expired",
-                    class: "status-expired",
-                    color: "var(--status-darkred)",
-                    percent: 0,
-                    category: "EXPIRED"
-                };
+                return { label: "🔴 Expired", class: "status-expired", color: "var(--status-darkred)", percent: 0, category: "EXPIRED" };
             } else if (remainingDays <= 3) {
-                return {
-                    label: `🔴 ${remainingDays} Day${remainingDays === 1 ? '' : 's'} Left`,
-                    class: "status-red",
-                    color: "var(--status-red)",
-                    percent: Math.min(100, (remainingDays / 30) * 100),
-                    category: "EXPIRING"
-                };
+                return { label: `🔴 ${remainingDays} Day${remainingDays === 1 ? '' : 's'} Left`, class: "status-red", color: "var(--status-red)", percent: Math.min(100, (remainingDays / 30) * 100), category: "EXPIRING" };
             } else if (remainingDays <= 7) {
-                return {
-                    label: `🟠 ${remainingDays} Days Left`,
-                    class: "status-orange",
-                    color: "var(--status-orange)",
-                    percent: Math.min(100, (remainingDays / 30) * 100),
-                    category: "EXPIRING"
-                };
+                return { label: `🟠 ${remainingDays} Days Left`, class: "status-orange", color: "var(--status-orange)", percent: Math.min(100, (remainingDays / 30) * 100), category: "EXPIRING" };
             } else {
-                return {
-                    label: `🟢 ${remainingDays} Days Left`,
-                    class: "status-green",
-                    color: "var(--status-green)",
-                    percent: Math.min(100, (remainingDays / 30) * 100),
-                    category: "ACTIVE"
-                };
+                return { label: `🟢 ${remainingDays} Days Left`, class: "status-green", color: "var(--status-green)", percent: Math.min(100, (remainingDays / 30) * 100), category: "ACTIVE" };
             }
         }
 
-        function sendReminder(number, packageName, expiryDate) {
+        function sendReminder(number, packageName, expiryDate, customerName) {
+            const remainingDays = calculateRemainingDays(expiryDate);
             const formattedDate = formatDateReadable(expiryDate);
-            const message = `Package Reminder\n\nYour ${packageName} package on ${number} will expire on ${formattedDate}.\n\nPlease renew your package on time.\n\nMadina Mobile Center Narowal`;
+            
+            let timeText = "";
+            if (remainingDays < 0) {
+                timeText = `EXPIRED ${Math.abs(remainingDays)} days ago!`;
+            } else if (remainingDays === 0) {
+                timeText = `EXPIRES TODAY!`;
+            } else {
+                timeText = `${remainingDays} days left`;
+            }
+
+            const message = `*PACKAGE REMINDER* \n\nDear ${customerName},\nYour *${packageName}* package will expire on *${formattedDate}* (*${timeText}*).\n\nKindly renew your package on time to avoid interruption.\n\nRegards,\n*Madina Mobile Center Narowal* 📱`;
 
             const smsUrl = "sms:" + number + "?body=" + encodeURIComponent(message);
             window.location.href = smsUrl;
@@ -1067,16 +1092,19 @@
                 const days = calculateRemainingDays(cust.expiry);
                 const statusInfo = getStatusInfo(days);
 
-                // Tab Filter
                 if (currentFilter === "ACTIVE" && statusInfo.category !== "ACTIVE") return false;
                 if (currentFilter === "EXPIRING" && statusInfo.category !== "EXPIRING") return false;
                 if (currentFilter === "EXPIRED" && statusInfo.category !== "EXPIRED") return false;
+                if (currentFilter === "PENDING") {
+                    const hasPendingMain = cust.mainPayment === 'Pending';
+                    const hasPendingChild = cust.childNumbers && cust.childNumbers.some(cn => cn.payment === 'Pending');
+                    if (!hasPendingMain && !hasPendingChild) return false;
+                }
 
-                // Search Query Filter
                 if (searchQuery) {
                     const matchName = cust.name.toLowerCase().includes(searchQuery);
                     const matchMain = cust.mainNumber.includes(searchQuery);
-                    const matchChild = cust.childNumbers && cust.childNumbers.some(cn => cn.includes(searchQuery));
+                    const matchChild = cust.childNumbers && cust.childNumbers.some(cn => (cn.number && cn.number.includes(searchQuery)) || (cn.name && cn.name.toLowerCase().includes(searchQuery)));
                     const matchNet = cust.network.toLowerCase().includes(searchQuery);
                     const matchPkg = cust.package.toLowerCase().includes(searchQuery);
                     const matchNotes = cust.notes && cust.notes.toLowerCase().includes(searchQuery);
@@ -1088,7 +1116,6 @@
                 return true;
             });
 
-            // Sort by remaining days ascending
             filtered.sort((a, b) => calculateRemainingDays(a.expiry) - calculateRemainingDays(b.expiry));
 
             if (filtered.length === 0) {
@@ -1105,18 +1132,34 @@
                 const days = calculateRemainingDays(cust.expiry);
                 const status = getStatusInfo(days);
                 const readableExpiry = formatDateReadable(cust.expiry);
+                const mainPayClass = cust.mainPayment === 'Pending' ? 'pay-pending' : 'pay-paid';
+                const mainPayText = cust.mainPayment === 'Pending' ? '🔴 Pay: Pending' : '🟢 Pay: Paid';
 
-                const childRowsHtml = (cust.childNumbers || []).map(cn => `
-                    <div class="number-box">
-                        <div>
-                            <span class="number-label">Child</span><br>
-                            <span class="number-val">${cn}</span>
+                const childRowsHtml = (cust.childNumbers || []).map((cn, idx) => {
+                    const cName = cn.name || 'Member';
+                    const cNum = cn.number || cn;
+                    const cPay = cn.payment || 'Paid';
+                    const cPayClass = cPay === 'Pending' ? 'pay-pending' : 'pay-paid';
+                    const cPayText = cPay === 'Pending' ? '🔴 Pending' : '🟢 Paid';
+
+                    return `
+                        <div class="number-box">
+                            <div class="number-box-top">
+                                <div>
+                                    <span class="number-label">👨‍👩‍👧 ${escapeHtml(cName)}</span><br>
+                                    <span class="number-val">${cNum}</span>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cNum}', '${cust.package}', '${cust.expiry}', '${escapeHtml(cust.name)}')">
+                                    🔔 SMS
+                                </button>
+                            </div>
+                            <div class="number-meta">
+                                <span>Payment Status</span>
+                                <span class="payment-status-tag ${cPayClass}" onclick="togglePaymentStatus('${cust.id}', 'child', ${idx})">${cPayText}</span>
+                            </div>
                         </div>
-                        <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cn}', '${cust.package}', '${cust.expiry}')">
-                            🔔 Reminder
-                        </button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 return `
                     <div class="customer-card">
@@ -1137,13 +1180,19 @@
                             </div>
 
                             <div class="number-box">
-                                <div>
-                                    <span class="number-label">Main Number</span><br>
-                                    <span class="number-val">${cust.mainNumber}</span>
+                                <div class="number-box-top">
+                                    <div>
+                                        <span class="number-label">Main Number</span><br>
+                                        <span class="number-val">${cust.mainNumber}</span>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cust.mainNumber}', '${cust.package}', '${cust.expiry}', '${escapeHtml(cust.name)}')">
+                                        🔔 SMS
+                                    </button>
                                 </div>
-                                <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cust.mainNumber}', '${cust.package}', '${cust.expiry}')">
-                                    🔔 Reminder
-                                </button>
+                                <div class="number-meta">
+                                    <span>Payment Status</span>
+                                    <span class="payment-status-tag ${mainPayClass}" onclick="togglePaymentStatus('${cust.id}', 'main')">${mainPayText}</span>
+                                </div>
                             </div>
 
                             ${cust.childNumbers && cust.childNumbers.length > 0 ? `
@@ -1277,7 +1326,7 @@
 
             const jsonStr = JSON.stringify(dataPayload, null, 2);
             const blob = new Blob([jsonStr], { type: "application/json" });
-            const url = URL.callwindow.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
 
             const a = document.createElement("a");
             a.href = url;
