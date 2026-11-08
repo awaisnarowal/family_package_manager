@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Package Manager - Madina Mobile Center Narowal</title>
-
+    
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#090d16">
+    <meta name="theme-color" content="#f3f3f3">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <!-- Service Worker Registration -->
@@ -23,43 +23,42 @@
 
     <style>
         :root {
-            --bg-primary: #090d16;
-            --bg-secondary: #131b2e;
-            --bg-card: rgba(19, 27, 46, 0.75);
-            --bg-input: rgba(9, 13, 22, 0.7);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-blue: #3b82f6;
-            --accent-cyan: #06b6d4;
-            --accent-glow: rgba(59, 130, 246, 0.4);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(56, 189, 248, 0.3);
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            --shadow-win: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(6, 182, 212, 0.1);
-            --status-green: #10b981;
-            --status-orange: #f59e0b;
-            --status-red: #ef4444;
-            --status-darkred: #991b1b;
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --win-bg: #f3f3f3;
+            --win-mica: rgba(255, 255, 255, 0.85);
+            --win-card: #ffffff;
+            --win-card-hover: #f9f9f9;
+            --win-input: #ffffff;
+            --win-input-border: #d1d1d1;
+            --win-accent: #0067c0;
+            --win-accent-hover: #005a9e;
+            --win-border: rgba(0, 0, 0, 0.08);
+            --win-border-light: rgba(0, 0, 0, 0.14);
+            --text-primary: #1c1c1c;
+            --text-secondary: #5d5d5d;
+            --radius-win: 10px;
+            --radius-sm: 6px;
+            --shadow-win: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --font-win: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --status-green: #107c41;
+            --status-orange: #d97706;
+            --status-red: #d13438;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-main);
+            font-family: var(--font-win);
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 70%);
+            background: var(--win-bg) radial-gradient(circle at top right, rgba(0, 103, 192, 0.05), transparent 50%);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 10px;
+            padding: 12px;
         }
 
         .container {
@@ -70,12 +69,12 @@
         }
 
         header {
-            background: rgba(19, 27, 46, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 16px;
+            background: var(--win-mica);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--win-border-light);
+            border-radius: var(--radius-win);
+            padding: 16px 20px;
             margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
@@ -83,23 +82,23 @@
             flex-wrap: wrap;
             gap: 12px;
             box-shadow: var(--shadow-win);
-            animation: fadeInDown 0.4s ease-out;
+            animation: winFadeIn 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
         .header-title h1 {
             font-size: 1.35rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+            color: #1c1c1c;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: -0.3px;
         }
 
         .header-title p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+            font-size: 0.82rem;
+            color: var(--win-accent);
+            font-weight: 600;
             margin-top: 2px;
         }
 
@@ -107,44 +106,33 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            width: 100%;
-        }
-
-        @media (min-width: 640px) {
-            .header-actions {
-                width: auto;
-            }
+            align-items: center;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @media (min-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 14px;
-            }
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+            animation: winFadeIn 0.5s ease-out;
         }
 
         .stat-card {
-            background: var(--bg-card);
+            background: var(--win-card);
             backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 12px 14px;
+            border: 1px solid var(--win-border);
+            border-radius: var(--radius-win);
+            padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-win);
         }
 
         .stat-card:hover {
-            border-color: var(--border-hover);
+            background: var(--win-card-hover);
+            border-color: var(--win-border-light);
             transform: translateY(-2px);
         }
 
@@ -154,39 +142,39 @@
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .stat-info h3 {
             font-size: 1.3rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-top: 2px;
-            color: #fff;
+            color: #1c1c1c;
         }
 
         .stat-icon {
-            font-size: 1.6rem;
-            opacity: 0.8;
+            font-size: 1.5rem;
+            opacity: 0.9;
         }
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 360px 1fr;
             gap: 16px;
             align-items: start;
         }
 
-        @media (min-width: 1024px) {
+        @media (max-width: 900px) {
             .main-layout {
-                grid-template-columns: 360px 1fr;
+                grid-template-columns: 1fr;
             }
         }
 
         .card-panel {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 16px;
+            background: var(--win-card);
+            border: 1px solid var(--win-border-light);
+            border-radius: var(--radius-win);
+            padding: 18px;
             box-shadow: var(--shadow-win);
             margin-bottom: 16px;
         }
@@ -198,9 +186,9 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            color: #38bdf8;
+            border-bottom: 1px solid var(--win-border);
+            padding-bottom: 8px;
+            color: var(--win-accent);
         }
 
         .form-group {
@@ -209,27 +197,27 @@
 
         .form-group label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
-            margin-bottom: 4px;
-            font-weight: 500;
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
         .form-control {
             width: 100%;
-            padding: 9px 11px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
+            padding: 9px 12px;
+            background: var(--win-input);
+            border: 1px solid var(--win-input-border);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             outline: none;
             transition: all 0.2s ease;
         }
 
         .form-control:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+            border-color: var(--win-accent);
+            box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.2);
         }
 
         .form-row {
@@ -243,62 +231,58 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: var(--radius-sm);
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            border: none;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
             text-decoration: none;
             user-select: none;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #2563eb, #0284c7);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            background: var(--win-accent);
+            color: #ffffff;
         }
 
         .btn-primary:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
+            background: var(--win-accent-hover);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
+            background: #fcfcfc;
             color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            border-color: var(--win-input-border);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--border-hover);
+            background: #f0f0f0;
+        }
+
+        .btn-success {
+            background: #107c41;
+            color: #ffffff;
+        }
+        
+        .btn-success:hover {
+            background: #0b5a30;
         }
 
         .btn-danger {
-            background: rgba(239, 68, 68, 0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #fde8e8;
+            color: var(--status-red);
+            border-color: #f8b4b4;
         }
 
         .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.25);
-        }
-
-        .btn-accent {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-accent:hover {
-            background: rgba(16, 185, 129, 0.25);
+            background: #fbd5d5;
         }
 
         .btn-sm {
             padding: 5px 8px;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
         }
 
         .btn-full {
@@ -306,99 +290,81 @@
         }
 
         .child-input-group {
-            background: rgba(9, 13, 22, 0.5);
-            border: 1px solid var(--border-color);
+            background: #f8f9fa;
+            border: 1px solid var(--win-border-light);
             padding: 8px;
             border-radius: var(--radius-sm);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr auto;
             gap: 6px;
-        }
-
-        .child-input-group select {
-            grid-column: span 2;
-        }
-
-        .child-input-group button {
-            grid-column: span 2;
+            align-items: center;
         }
 
         .search-filter-bar {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        @media (min-width: 640px) {
-            .search-filter-bar {
-                flex-direction: row;
-            }
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
         }
 
         .search-box {
             flex: 1;
+            min-width: 200px;
         }
 
         .filter-tabs {
             display: flex;
             gap: 4px;
-            background: var(--bg-card);
+            background: var(--win-card);
             padding: 4px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius-win);
+            border: 1px solid var(--win-border-light);
+            box-shadow: var(--shadow-win);
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
-            padding: 6px 10px;
-            font-size: 0.75rem;
-            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            border-radius: var(--radius-sm);
             border: none;
             background: transparent;
             color: var(--text-secondary);
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             white-space: nowrap;
             transition: all 0.2s ease;
         }
 
         .tab-btn.active {
-            background: var(--accent-blue);
-            color: #fff;
+            background: var(--win-accent);
+            color: #ffffff;
         }
 
         .customer-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 14px;
         }
 
-        @media (min-width: 640px) {
-            .customer-grid {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            }
-        }
-
         .customer-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 14px;
+            background: var(--win-card);
+            border: 1px solid var(--win-border-light);
+            border-radius: var(--radius-win);
+            padding: 16px;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.4s ease-out;
+            transition: all 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+            box-shadow: var(--shadow-win);
+            animation: winFadeIn 0.35s ease-out;
         }
 
         .customer-card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-win);
+            background: var(--win-card-hover);
+            transform: translateY(-2px);
         }
 
         .card-header-info {
@@ -406,123 +372,99 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 10px;
-            gap: 8px;
         }
 
         .cust-name {
             font-size: 1.05rem;
             font-weight: 700;
-            color: #fff;
+            color: #1c1c1c;
         }
 
         .badge-tags {
             display: flex;
-            gap: 4px;
-            margin-top: 4px;
-            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 3px;
         }
 
         .tag {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             padding: 2px 6px;
-            border-radius: 10px;
+            border-radius: 6px;
             font-weight: 600;
             text-transform: uppercase;
         }
 
         .tag-network {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
         }
 
         .tag-package {
-            background: rgba(168, 85, 247, 0.15);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.3);
+            background: #f3e8ff;
+            color: #9333ea;
+            border: 1px solid #e9d5ff;
         }
 
         .status-badge {
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
+            gap: 4px;
             white-space: nowrap;
         }
 
         .status-green {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
         .status-orange {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
         .status-red {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
         }
 
         .status-expired {
-            background: rgba(153, 27, 27, 0.3);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            animation: pulse-red 2s infinite;
-        }
-
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .expiry-highlight-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin: 8px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .expiry-date-text {
-            font-size: 0.82rem;
-            color: #f1f5f9;
-            font-weight: 600;
+            background: #f87171;
+            color: #ffffff;
+            border: 1px solid #ef4444;
         }
 
         .progress-bar-container {
             width: 100%;
             height: 5px;
-            background: rgba(255, 255, 255, 0.08);
+            background: #e5e7eb;
             border-radius: 3px;
-            margin-top: 4px;
+            margin: 8px 0 10px 0;
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
             border-radius: 3px;
-            transition: width 0.5s ease;
+            transition: width 0.4s ease, background-color 0.4s ease;
         }
 
         .number-box {
-            background: rgba(9, 13, 22, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: var(--radius-sm);
             padding: 8px;
             margin-bottom: 6px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .number-box-top {
@@ -536,20 +478,21 @@
             justify-content: space-between;
             align-items: center;
             font-size: 0.72rem;
-            border-top: 1px dashed rgba(255,255,255,0.08);
+            border-top: 1px dashed #cbd5e1;
             padding-top: 4px;
         }
 
         .number-label {
             font-size: 0.75rem;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .number-val {
-            font-family: monospace;
+            font-family: 'Consolas', monospace;
             font-size: 0.9rem;
-            font-weight: 600;
-            color: #f1f5f9;
+            font-weight: 700;
+            color: #0f172a;
         }
 
         .payment-status-tag {
@@ -562,77 +505,100 @@
         }
 
         .pay-paid {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
         }
 
         .pay-pending {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
         }
 
-        /* Collapsible Dropdown for Child Numbers */
-        .child-accordion-btn {
+        .child-section {
+            margin-top: 6px;
+            border-top: 1px dashed var(--win-border-light);
+            padding-top: 6px;
+        }
+
+        .child-dropdown-toggle {
             width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: var(--win-accent);
             padding: 6px 10px;
             border-radius: var(--radius-sm);
             font-size: 0.78rem;
             font-weight: 600;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            margin-top: 6px;
+            transition: all 0.2s ease;
         }
 
-        .child-accordion-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .child-dropdown-toggle:hover {
+            background: #e2e8f0;
         }
 
-        .child-accordion-content {
+        .child-dropdown-content {
             display: none;
             margin-top: 6px;
-            padding-left: 4px;
-            border-left: 2px solid var(--accent-blue);
         }
 
-        .child-accordion-content.active {
+        .child-dropdown-content.open {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: winFadeIn 0.25s ease;
+        }
+
+        .promote-btn {
+            font-size: 0.62rem;
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            padding: 2px 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .promote-btn:hover {
+            background: #fde68a;
         }
 
         .card-notes {
-            font-size: 0.78rem;
-            color: #cbd5e1;
-            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.8rem;
+            color: #334155;
+            background: #f8fafc;
             padding: 6px 8px;
             border-radius: var(--radius-sm);
             margin-top: 6px;
-            border-left: 2px solid #38bdf8;
+            border-left: 3px solid var(--win-accent);
             word-break: break-word;
         }
 
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             margin-top: 10px;
             padding-top: 8px;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--win-border);
         }
 
         .card-actions .btn {
             flex: 1;
+            padding: 6px 4px;
+            font-size: 0.75rem;
         }
 
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(9, 13, 22, 0.85);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -640,8 +606,8 @@
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s ease;
-            padding: 14px;
+            transition: all 0.25s ease;
+            padding: 12px;
         }
 
         .modal-overlay.active {
@@ -650,17 +616,17 @@
         }
 
         .modal-container {
-            background: #131b2e;
-            border: 1px solid var(--border-hover);
-            border-radius: var(--radius-lg);
+            background: #ffffff;
+            border: 1px solid var(--win-border-light);
+            border-radius: var(--radius-win);
             width: 100%;
             max-width: 480px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            transform: scale(0.95);
-            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: scale(0.96);
+            transition: all 0.25s ease;
         }
 
         .modal-overlay.active .modal-container {
@@ -672,13 +638,13 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 14px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--win-border);
             padding-bottom: 8px;
         }
 
         .modal-header h3 {
             font-size: 1.1rem;
-            color: #38bdf8;
+            color: var(--win-accent);
         }
 
         .close-modal {
@@ -689,32 +655,38 @@
             cursor: pointer;
         }
 
+        .close-modal:hover {
+            color: #000;
+        }
+
+        .quick-date-btns {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
         footer {
             margin-top: 30px;
             padding: 16px 0;
             text-align: center;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--win-border);
             color: var(--text-secondary);
             font-size: 0.8rem;
         }
 
         footer strong {
-            color: #38bdf8;
+            color: var(--win-accent);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
+        @keyframes winFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .empty-state {
             text-align: center;
-            padding: 30px 14px;
+            padding: 30px 15px;
             color: var(--text-secondary);
             grid-column: 1 / -1;
         }
@@ -729,9 +701,10 @@
                 <p>Madina Mobile Center Narowal</p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-secondary btn-sm" onclick="openPackageModal()">⚙ Settings</button>
+                <button class="btn btn-secondary btn-sm" onclick="openPackageModal()">⚙ Packages</button>
+                <button class="btn btn-success btn-sm" onclick="exportCSV()">📊 Export CSV</button>
                 <button class="btn btn-secondary btn-sm" onclick="exportData()">⬇ Backup</button>
-                <button class="btn btn-secondary btn-sm" onclick="triggerImport()">⬆ Import</button>
+                <button class="btn btn-secondary btn-sm" onclick="triggerImport()">⬆ Restore</button>
                 <input type="file" id="importFileInput" style="display: none;" accept=".json" onchange="importData(event)">
             </div>
         </header>
@@ -739,28 +712,35 @@
         <section class="stats-grid">
             <div class="stat-card">
                 <div class="stat-info">
-                    <span>Customers</span>
+                    <span>Total Customers</span>
                     <h3 id="statTotalCustomers">0</h3>
                 </div>
                 <div class="stat-icon">👥</div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <span>Main Sims</span>
+                    <span>Main Numbers</span>
                     <h3 id="statMainNumbers">0</h3>
                 </div>
                 <div class="stat-icon">📞</div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <span>Child Sims</span>
+                    <span>Child Numbers</span>
                     <h3 id="statChildNumbers">0</h3>
                 </div>
                 <div class="stat-icon">👨‍👩‍👧</div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <span>Active / Exp</span>
+                    <span>Pending Dues</span>
+                    <h3 id="statPendingCount">0</h3>
+                </div>
+                <div class="stat-icon">⏳</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Active / Expired</span>
                     <h3 id="statActiveExpired">0 / 0</h3>
                 </div>
                 <div class="stat-icon">📊</div>
@@ -801,12 +781,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="custMainNumber">Main Number * (11 digits, 03xx)</label>
+                        <label for="custMainNumber">Main Number * (11 digits, starts with 03)</label>
                         <input type="tel" id="custMainNumber" class="form-control" placeholder="03001234567" maxlength="11" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="mainPaymentStatus">Main Payment Status</label>
+                        <label for="mainPaymentStatus">Main Number Payment Status</label>
                         <select id="mainPaymentStatus" class="form-control">
                             <option value="Paid">Paid (Adaigi Ho Chuki)</option>
                             <option value="Pending">Pending (Adaigi Baqi Hai)</option>
@@ -828,7 +808,7 @@
 
                     <div class="form-group">
                         <label for="custNotes">Notes (Optional)</label>
-                        <textarea id="custNotes" class="form-control" rows="2" placeholder="Special requirements, notes..."></textarea>
+                        <textarea id="custNotes" class="form-control" rows="2" placeholder="Special requirements, discounts, etc."></textarea>
                     </div>
 
                     <div style="display: flex; gap: 8px; margin-top: 14px;">
@@ -846,7 +826,7 @@
             <div>
                 <div class="search-filter-bar">
                     <div class="search-box">
-                        <input type="text" id="searchInput" class="form-control" placeholder="🔎 Search Name, Number, Network..." oninput="renderCustomers()">
+                        <input type="text" id="searchInput" class="form-control" placeholder="🔎 Search Name, Numbers, Network, Notes..." oninput="renderCustomers()">
                     </div>
                     <div class="filter-tabs">
                         <button class="tab-btn active" onclick="setFilter('ALL', this)">All</button>
@@ -858,7 +838,7 @@
                 </div>
 
                 <div id="customerGrid" class="customer-grid">
-                    <!-- Cards dynamically injected -->
+                    <!-- Cards rendered dynamically -->
                 </div>
             </div>
 
@@ -880,13 +860,13 @@
                 </div>
             </div>
             <div style="margin-top: 14px;">
-                <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px;">Existing Packages</label>
+                <label style="font-size: 0.82rem; color: var(--text-secondary); display: block; margin-bottom: 6px;">Existing Packages</label>
                 <div id="packagesList"></div>
             </div>
         </div>
     </div>
 
-    <!-- Renewal Date Picker Modal -->
+    <!-- Renewal Date Picker Modal with Quick Shortcuts -->
     <div class="modal-overlay" id="renewModal">
         <div class="modal-container" style="max-width: 380px;">
             <div class="modal-header">
@@ -897,6 +877,11 @@
             <div class="form-group">
                 <label for="renewDateInput">Select New Expiry Date</label>
                 <input type="date" id="renewDateInput" class="form-control" required>
+                <div class="quick-date-btns">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setQuickRenewalDays(7)">+7 Days</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setQuickRenewalDays(30)">+1 Month</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setQuickRenewalDays(90)">+3 Months</button>
+                </div>
             </div>
             <div style="display: flex; gap: 8px; margin-top: 16px;">
                 <button class="btn btn-primary btn-full" onclick="confirmRenewal()">Confirm Renewal</button>
@@ -906,7 +891,7 @@
     </div>
 
     <footer>
-        <strong>Madina Mobile Center Narowal</strong> &bull; Family Packages Management System
+        <strong>Madina Mobile Center Narowal</strong> &bull; Family Package Manager
     </footer>
 
     <script>
@@ -977,11 +962,11 @@
             div.innerHTML = `
                 <input type="text" class="form-control child-name-input" placeholder="Name (e.g. Ali)" value="${nameVal}">
                 <input type="tel" class="form-control child-num-input" placeholder="03111234567" maxlength="11" value="${numVal}">
-                <select class="form-control child-pay-input">
+                <select class="form-control child-pay-input" style="padding: 5px; font-size: 0.78rem;">
                     <option value="Paid" ${payVal === 'Paid' ? 'selected' : ''}>Paid</option>
                     <option value="Pending" ${payVal === 'Pending' ? 'selected' : ''}>Pending</option>
                 </select>
-                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕ Remove</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()" style="grid-column: span 3;">✕ Remove</button>
             `;
             container.appendChild(div);
         }
@@ -999,20 +984,20 @@
             const notes = document.getElementById("custNotes").value.trim();
 
             if (!validateNumber(mainNum)) {
-                alert("Main Number 11 digits (03xx) ka hona chahiye.");
+                alert("Main Number must be exactly 11 digits and start with 03 (e.g. 03001234567)");
                 return;
             }
 
             const childRows = document.querySelectorAll(".child-input-group");
             const childNumbers = [];
             for (let row of childRows) {
-                const cName = row.querySelector(".child-name-input").value.trim() || "Member";
+                const cName = row.querySelector(".child-name-input").value.trim() || "Family Member";
                 const cNum = row.querySelector(".child-num-input").value.trim();
                 const cPay = row.querySelector(".child-pay-input").value;
 
                 if (cNum) {
                     if (!validateNumber(cNum)) {
-                        alert(`Child Number "${cNum}" 11 digits 03xx me hona zaruri hai.`);
+                        alert(`Child Number "${cNum}" is invalid. Must be 11 digits starting with 03.`);
                         return;
                     }
                     childNumbers.push({ name: cName, number: cNum, payment: cPay });
@@ -1081,10 +1066,31 @@
         }
 
         function deleteCustomer(id) {
-            if (confirm("Kya aap is customer ko delete karna chahte hain?")) {
+            if (confirm("Delete this customer permanently?")) {
                 customers = customers.filter(c => c.id !== id);
                 saveCustomers();
             }
+        }
+
+        function promoteChildToMaster(custId, childIndex) {
+            const cust = customers.find(c => c.id === custId);
+            if (!cust || !cust.childNumbers || !cust.childNumbers[childIndex]) return;
+
+            const childObj = cust.childNumbers[childIndex];
+            const oldMainNum = cust.mainNumber;
+            const oldMainPay = cust.mainPayment || "Paid";
+
+            cust.mainNumber = childObj.number;
+            cust.mainPayment = childObj.payment || "Paid";
+            
+            cust.childNumbers[childIndex] = {
+                name: cust.name,
+                number: oldMainNum,
+                payment: oldMainPay
+            };
+
+            saveCustomers();
+            alert(`👑 Success! ${childObj.number} (${childObj.name}) ko Main Master Number bana diya gaya hai.`);
         }
 
         function togglePaymentStatus(id, type, index = null) {
@@ -1099,42 +1105,10 @@
             saveCustomers();
         }
 
-        function promoteChildToMain(id, index) {
-            const cust = customers.find(c => c.id === id);
-            if (!cust || !cust.childNumbers || !cust.childNumbers[index]) return;
-
-            if (confirm("Kya aap is Child Number ko Master Main Number banana chahte hain?")) {
-                const oldMainNumber = cust.mainNumber;
-                const oldMainPayment = cust.mainPayment || 'Paid';
-
-                const targetChild = cust.childNumbers[index];
-                
-                // Swap target child to Main
-                cust.mainNumber = targetChild.number;
-                cust.mainPayment = targetChild.payment || 'Paid';
-
-                // Old main becomes child
-                cust.childNumbers[index] = {
-                    name: "Ex-Main Sim",
-                    number: oldMainNumber,
-                    payment: oldMainPayment
-                };
-
-                saveCustomers();
-            }
-        }
-
-        function toggleChildAccordion(id) {
-            const el = document.getElementById(`child-accordion-${id}`);
-            const btnIcon = document.getElementById(`accordion-icon-${id}`);
-            if (el) {
-                if (el.classList.contains("active")) {
-                    el.classList.remove("active");
-                    if (btnIcon) btnIcon.textContent = "▼";
-                } else {
-                    el.classList.add("active");
-                    if (btnIcon) btnIcon.textContent = "▲";
-                }
+        function toggleChildDropdown(custId) {
+            const content = document.getElementById(`childContent_${custId}`);
+            if (content) {
+                content.classList.toggle("open");
             }
         }
 
@@ -1148,16 +1122,28 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
-        function formatDateReadable(dateStr) {
+        function formatDateNoYear(dateStr) {
             if (!dateStr) return "";
             const d = new Date(dateStr);
             if (isNaN(d.getTime())) return dateStr;
-            return d.toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' });
+            return d.toLocaleDateString("en-GB", { day: '2-digit', month: 'short' });
+        }
+
+        function formatDateUrduNoYear(dateStr) {
+            if (!dateStr) return "";
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            
+            const urduMonths = ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"];
+            const day = d.getDate();
+            const month = urduMonths[d.getMonth()];
+            
+            return `${day} ${month}`;
         }
 
         function getStatusInfo(remainingDays) {
             if (remainingDays < 0) {
-                return { label: "🔴 Expired", class: "status-expired", color: "var(--status-darkred)", percent: 0, category: "EXPIRED" };
+                return { label: "🔴 Expired", class: "status-expired", color: "var(--status-red)", percent: 0, category: "EXPIRED" };
             } else if (remainingDays <= 3) {
                 return { label: `🔴 ${remainingDays} Day${remainingDays === 1 ? '' : 's'} Left`, class: "status-red", color: "var(--status-red)", percent: Math.min(100, (remainingDays / 30) * 100), category: "EXPIRING" };
             } else if (remainingDays <= 7) {
@@ -1167,24 +1153,53 @@
             }
         }
 
-        function sendUrduReminder(targetNumber, packageName, expiryDate) {
+        // Urdu Script SMS Reminder without Year
+        function sendReminder(number, packageName, expiryDate, paymentStatus) {
             const remainingDays = calculateRemainingDays(expiryDate);
-            const formattedDate = formatDateReadable(expiryDate);
-
-            let daysText = "";
+            const formattedDateUrdu = formatDateUrduNoYear(expiryDate);
+            
+            let timeTextUrdu = "";
             if (remainingDays < 0) {
-                daysText = `package expire ho chuka hai (${Math.abs(remainingDays)} din pehle)`;
+                timeTextUrdu = `ختم ہوئے ${Math.abs(remainingDays)} دن ہو گئے ہیں`;
             } else if (remainingDays === 0) {
-                daysText = "aaj expire ho raha hai";
+                timeTextUrdu = `آج آخری دن ہے`;
             } else {
-                daysText = `is me sirf ${remainingDays} din baqi hain`;
+                timeTextUrdu = `${remainingDays} دن باقی ہیں`;
             }
 
-            // Clean Urdu SMS without * formatting
-            const message = `Assalam-o-Alaikum, Aap ke mobile number ${targetNumber} par ${packageName} package ki aakhri tareeq ${formattedDate} hai (${daysText}). Barah-e-karam waqt par renewal karwain taake service jari rahe. Shukriya! Madina Mobile Center Narowal`;
+            const payStatusUrdu = (paymentStatus === 'Pending' || paymentStatus === 'Unpaid') 
+                ? "غیر ادا شدہ (Unpaid - ادائیگی باقی ہے)" 
+                : "ادا شدہ (Paid - ادائیگی ہو چکی ہے)";
 
-            const smsUrl = "sms:" + targetNumber + "?body=" + encodeURIComponent(message);
+            const message = `پیکج کی اطلاع\n\nآپ کا ${packageName} پیکج نمبر ${number} پر ${formattedDateUrdu} کو ختم ہو رہا ہے (${timeTextUrdu})۔\n\nادائیگی کی صورتحال: ${payStatusUrdu}\n\nبرائے مہربانی وقت پر اپنا پیکج رینیو کروائیں۔\n\nمدینہ موبائل سینٹر نارووال`;
+
+            const smsUrl = "sms:" + number + "?body=" + encodeURIComponent(message);
             window.location.href = smsUrl;
+        }
+
+        // WhatsApp Direct Reminder Function
+        function sendWhatsApp(number, packageName, expiryDate, paymentStatus) {
+            const remainingDays = calculateRemainingDays(expiryDate);
+            const formattedDateUrdu = formatDateUrduNoYear(expiryDate);
+            
+            let timeTextUrdu = "";
+            if (remainingDays < 0) {
+                timeTextUrdu = `ختم ہوئے ${Math.abs(remainingDays)} دن ہو گئے ہیں`;
+            } else if (remainingDays === 0) {
+                timeTextUrdu = `آج آخری دن ہے`;
+            } else {
+                timeTextUrdu = `${remainingDays} دن باقی ہیں`;
+            }
+
+            const payStatusUrdu = (paymentStatus === 'Pending' || paymentStatus === 'Unpaid') 
+                ? "غیر ادا شدہ (Unpaid - ادائیگی باقی ہے)" 
+                : "ادا شدہ (Paid - ادائیگی ہو چکی ہے)";
+
+            const message = `پیکج کی اطلاع\n\nآپ کا ${packageName} پیکج نمبر ${number} پر ${formattedDateUrdu} کو ختم ہو رہا ہے (${timeTextUrdu})۔\n\nادائیگی کی صورتحال: ${payStatusUrdu}\n\nبرائے مہربانی وقت پر اپنا پیکج رینیو کروائیں۔\n\nمدینہ موبائل سینٹر نارووال`;
+
+            let formattedNum = number.startsWith('0') ? '92' + number.slice(1) : number;
+            const waUrl = `https://wa.me/${formattedNum}?text=` + encodeURIComponent(message);
+            window.open(waUrl, '_blank');
         }
 
         function setFilter(filter, btn) {
@@ -1218,7 +1233,7 @@
                     const matchNet = cust.network.toLowerCase().includes(searchQuery);
                     const matchPkg = cust.package.toLowerCase().includes(searchQuery);
                     const matchNotes = cust.notes && cust.notes.toLowerCase().includes(searchQuery);
-                    const matchDate = formatDateReadable(cust.expiry).toLowerCase().includes(searchQuery);
+                    const matchDate = formatDateNoYear(cust.expiry).toLowerCase().includes(searchQuery);
 
                     return matchName || matchMain || matchChild || matchNet || matchPkg || matchNotes || matchDate;
                 }
@@ -1231,8 +1246,8 @@
             if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
-                        <span style="font-size:2rem;">📱</span>
-                        <p style="margin-top:6px;">Koi record nahi mila.</p>
+                        <span style="font-size:2.2rem;">📱</span>
+                        <p style="margin-top:6px;">No customers found matching criteria.</p>
                     </div>
                 `;
                 return;
@@ -1241,9 +1256,11 @@
             grid.innerHTML = filtered.map(cust => {
                 const days = calculateRemainingDays(cust.expiry);
                 const status = getStatusInfo(days);
-                const readableExpiry = formatDateReadable(cust.expiry);
+                const readableExpiry = formatDateNoYear(cust.expiry);
                 const mainPayClass = cust.mainPayment === 'Pending' ? 'pay-pending' : 'pay-paid';
                 const mainPayText = cust.mainPayment === 'Pending' ? '🔴 Pending' : '🟢 Paid';
+
+                const childCount = cust.childNumbers ? cust.childNumbers.length : 0;
 
                 const childRowsHtml = (cust.childNumbers || []).map((cn, idx) => {
                     const cName = cn.name || 'Member';
@@ -1253,21 +1270,20 @@
                     const cPayText = cPay === 'Pending' ? '🔴 Pending' : '🟢 Paid';
 
                     return `
-                        <div class="number-box">
+                        <div class="number-box" style="margin-top: 6px;">
                             <div class="number-box-top">
                                 <div>
                                     <span class="number-label">👨‍👩‍👧 ${escapeHtml(cName)}</span><br>
                                     <span class="number-val">${cNum}</span>
                                 </div>
-                                <div style="display:flex; gap:4px;">
-                                    <button class="btn btn-accent btn-sm" title="Promote to Main Number" onclick="promoteChildToMain('${cust.id}', ${idx})">👑</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="sendUrduReminder('${cNum}', '${cust.package}', '${cust.expiry}')">
-                                        📩 SMS
-                                    </button>
+                                <div style="display:flex; gap:3px; align-items:center;">
+                                    <button class="promote-btn" title="Convert to Master Number" onclick="promoteChildToMaster('${cust.id}', ${idx})">👑 Master</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cNum}', '${cust.package}', '${cust.expiry}', '${cPay}')">🔔 SMS</button>
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('${cNum}', '${cust.package}', '${cust.expiry}', '${cPay}')">💬 WA</button>
                                 </div>
                             </div>
                             <div class="number-meta">
-                                <span>Payment Status</span>
+                                <span>Status</span>
                                 <span class="payment-status-tag ${cPayClass}" onclick="togglePaymentStatus('${cust.id}', 'child', ${idx})">${cPayText}</span>
                             </div>
                         </div>
@@ -1288,45 +1304,42 @@
                                 <span class="status-badge ${status.class}">${status.label}</span>
                             </div>
 
-                            <div class="expiry-highlight-box">
-                                <div>
-                                    <span style="font-size:0.7rem; color:var(--text-secondary); display:block;">EXPIRY DATE</span>
-                                    <span class="expiry-date-text">📅 ${readableExpiry}</span>
-                                </div>
-                                <span style="font-size:0.78rem; font-weight:700; color:${status.color};">${days >= 0 ? days + ' Days Left' : 'Expired'}</span>
-                            </div>
-
                             <div class="progress-bar-container">
                                 <div class="progress-bar-fill" style="width: ${Math.max(5, status.percent)}%; background-color: ${status.color};"></div>
                             </div>
 
-                            <!-- Main Number Box -->
-                            <div class="number-box" style="margin-top:8px;">
+                            <div class="number-box">
                                 <div class="number-box-top">
                                     <div>
-                                        <span class="number-label">⭐ Master Number</span><br>
+                                        <span class="number-label">Main Number</span><br>
                                         <span class="number-val">${cust.mainNumber}</span>
                                     </div>
-                                    <button class="btn btn-secondary btn-sm" onclick="sendUrduReminder('${cust.mainNumber}', '${cust.package}', '${cust.expiry}')">
-                                        📩 SMS
-                                    </button>
+                                    <div style="display:flex; gap:3px;">
+                                        <button class="btn btn-secondary btn-sm" onclick="sendReminder('${cust.mainNumber}', '${cust.package}', '${cust.expiry}', '${cust.mainPayment || 'Paid'}')">🔔 SMS</button>
+                                        <button class="btn btn-success btn-sm" onclick="sendWhatsApp('${cust.mainNumber}', '${cust.package}', '${cust.expiry}', '${cust.mainPayment || 'Paid'}')">💬 WA</button>
+                                    </div>
                                 </div>
                                 <div class="number-meta">
-                                    <span>Payment Status</span>
+                                    <span>Status</span>
                                     <span class="payment-status-tag ${mainPayClass}" onclick="togglePaymentStatus('${cust.id}', 'main')">${mainPayText}</span>
                                 </div>
                             </div>
 
-                            <!-- Accordion Collapsible Child Numbers -->
-                            ${cust.childNumbers && cust.childNumbers.length > 0 ? `
-                                <button class="child-accordion-btn" onclick="toggleChildAccordion('${cust.id}')">
-                                    <span>👨‍👩‍👧 Child Numbers (${cust.childNumbers.length})</span>
-                                    <span id="accordion-icon-${cust.id}">▼</span>
-                                </button>
-                                <div id="child-accordion-${cust.id}" class="child-accordion-content">
-                                    ${childRowsHtml}
+                            ${childCount > 0 ? `
+                                <div class="child-section">
+                                    <button class="child-dropdown-toggle" onclick="toggleChildDropdown('${cust.id}')">
+                                        <span>👨‍👩‍👧 Child Numbers (${childCount})</span>
+                                        <span>▼ View</span>
+                                    </button>
+                                    <div id="childContent_${cust.id}" class="child-dropdown-content">
+                                        ${childRowsHtml}
+                                    </div>
                                 </div>
                             ` : ''}
+
+                            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 8px;">
+                                Expiry Date: <strong style="color: #0f172a;">${readableExpiry}</strong>
+                            </div>
 
                             ${cust.notes ? `<div class="card-notes">📝 ${escapeHtml(cust.notes)}</div>` : ''}
                         </div>
@@ -1353,8 +1366,8 @@
         function renderPackagesList() {
             const list = document.getElementById("packagesList");
             list.innerHTML = packages.map((pkg, idx) => `
-                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(9,13,22,0.6); padding: 6px 10px; border-radius: var(--radius-sm); margin-bottom: 6px;">
-                    <span style="font-weight: 600; font-size: 0.88rem;">${escapeHtml(pkg)}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: var(--radius-sm); margin-bottom: 5px; border: 1px solid #e2e8f0;">
+                    <span style="font-weight: 600; font-size: 0.85rem;">${escapeHtml(pkg)}</span>
                     <button class="btn btn-danger btn-sm" onclick="deletePackage(${idx})">Remove</button>
                 </div>
             `).join('');
@@ -1374,7 +1387,7 @@
 
         function deletePackage(index) {
             if (packages.length <= 1) {
-                alert("Kam az kam ek package name hona zaruri hai.");
+                alert("At least one package name must remain.");
                 return;
             }
             packages.splice(index, 1);
@@ -1396,12 +1409,22 @@
             document.getElementById("renewModal").classList.remove("active");
         }
 
+        // Quick Renewal Shortcut Helper (+7 Days, +1 Month, +3 Months)
+        function setQuickRenewalDays(daysToAdd) {
+            const dateInput = document.getElementById("renewDateInput");
+            let baseDate = dateInput.value ? new Date(dateInput.value) : new Date();
+            if (isNaN(baseDate.getTime())) baseDate = new Date();
+            
+            baseDate.setDate(baseDate.getDate() + daysToAdd);
+            dateInput.value = baseDate.toISOString().slice(0, 10);
+        }
+
         function confirmRenewal() {
             const id = document.getElementById("renewCustomerId").value;
             const newDate = document.getElementById("renewDateInput").value;
 
             if (!newDate) {
-                alert("Sahi expiry date select karein.");
+                alert("Please select a valid expiry date.");
                 return;
             }
 
@@ -1420,10 +1443,17 @@
             let totalChild = 0;
             let activeCount = 0;
             let expiredCount = 0;
+            let pendingCount = 0;
 
             customers.forEach(c => {
                 if (c.childNumbers) {
                     totalChild += c.childNumbers.length;
+                    c.childNumbers.forEach(cn => {
+                        if (cn.payment === 'Pending') pendingCount++;
+                    });
+                }
+                if (c.mainPayment === 'Pending') {
+                    pendingCount++;
                 }
                 const days = calculateRemainingDays(c.expiry);
                 if (days < 0) {
@@ -1436,7 +1466,40 @@
             document.getElementById("statTotalCustomers").textContent = totalCust;
             document.getElementById("statMainNumbers").textContent = totalMain;
             document.getElementById("statChildNumbers").textContent = totalChild;
+            document.getElementById("statPendingCount").textContent = pendingCount;
             document.getElementById("statActiveExpired").textContent = `${activeCount} / ${expiredCount}`;
+        }
+
+        // CSV Export Feature
+        function exportCSV() {
+            if (customers.length === 0) {
+                alert("No data available to export.");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,Customer Name,Network,Package,Main Number,Main Payment,Expiry Date,Child Numbers & Status,Notes\n";
+
+            customers.forEach(cust => {
+                const childInfo = (cust.childNumbers || []).map(cn => `${cn.name}:${cn.number}(${cn.payment})`).join(' | ');
+                const row = [
+                    `"${cust.name || ''}"`,
+                    `"${cust.network || ''}"`,
+                    `"${cust.package || ''}"`,
+                    `"${cust.mainNumber || ''}"`,
+                    `"${cust.mainPayment || 'Paid'}"`,
+                    `"${cust.expiry || ''}"`,
+                    `"${childInfo}"`,
+                    `"${(cust.notes || '').replace(/"/g, '""')}"`
+                ];
+                csvContent += row.join(",") + "\r\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Madina_Mobile_Customers_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function exportData() {
@@ -1473,7 +1536,7 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     if (parsed && Array.isArray(parsed.customers) && Array.isArray(parsed.packages)) {
-                        if (confirm("Import karne se maujooda data replace ho jayega. Continue?")) {
+                        if (confirm("Importing this backup will replace current records. Continue?")) {
                             customers = parsed.customers;
                             packages = parsed.packages;
                             saveCustomers();
@@ -1482,10 +1545,10 @@
                             alert("Backup restored successfully!");
                         }
                     } else {
-                        alert("Ghalat backup file format.");
+                        alert("Invalid backup file structure.");
                     }
                 } catch (err) {
-                    alert("JSON File read nahi ho saki.");
+                    alert("Error reading JSON file.");
                 }
                 event.target.value = "";
             };
